@@ -1,0 +1,52 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+static/admin/
+migrations/*.py
+!migrations/__init__.py
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Virtual Environment
+venv/
+ENV/
+
+# Local development settings
+local_settings.py
+
+# System Files
+.DS_Store
+Thumbs.db
+
+.pylintrc
+.idea
+.env
+
+.env.local
+
