@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="{% static 'todolist/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Todo List</h1>
+                </div>
+                <div class="auth-links">
+                    {% if user.is_authenticated %}
+                        <span>Welcome, {{ user.username }}!</span>
+                        <a href="{% url 'logout' %}" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                        <a href="{% url 'register' %}" class="btn btn-success">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <div class="task-list">
+                <div class="task-controls">
+                    <a href="{% url 'task_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Task
+                    </a>
+                </div>
+                {% if tasks %}
+                    {% for task in tasks %}
+                        <div class="task-item">
+                            <div class="task-content">
+                                <input type="checkbox" class="task-checkbox" {% if task.status %}checked{% endif %}>
+                                <span class="task-name {% if task.status %}task-completed{% endif %}">
+                                    {{ task.name }}
+                                </span>
+                            </div>
+                            <div class="task-actions">
+                                <a href="{% url 'task_update' task.pk %}" class="btn btn-primary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'task_delete' task.pk %}" class="btn btn-danger delete-task">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="task-item">
+                        <p>No tasks yet. Create your first task!</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="welcome-message">
+                <h2>Welcome to Todo List!</h2>
+                <p>Organize your tasks efficiently and boost your productivity.</p>
+                <div class="auth-links" style="margin-top: 2rem;">
+                    <a href="{% url 'login' %}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Get Started
+                    </a>
+                    <a href="{% url 'register' %}" class="btn btn-success">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <script src="{% static 'todolist/js/main.js' %}"></script>
+</body>
+</html>

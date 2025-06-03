@@ -1,0 +1,39 @@
+{% extends 'todolist/base.html' %}
+
+{% block title %}{% if object %}Edit Task{% else %}New Task{% endif %} - Todo List{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="task-form">
+        <h2>{% if object %}Edit Task{% else %}Create New Task{% endif %}</h2>
+        <form method="post" class="form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">
+                    <i class="fas {% if field.name == 'name' %}fa-tasks{% else %}fa-check-circle{% endif %}"></i>
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="field-errors">
+                    {% for error in field.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas {% if object %}fa-save{% else %}fa-plus{% endif %}"></i>
+                    {% if object %}Save Changes{% else %}Create Task{% endif %}
+                </button>
+                <a href="{% url 'home' %}" class="btn btn-danger">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
