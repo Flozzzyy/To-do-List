@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Анимация исчезновения сообщений
+    // Message fade animation
     const messages = document.querySelectorAll('.message');
     messages.forEach(message => {
         setTimeout(() => {
@@ -8,11 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     });
 
-    // Обработка изменения статуса задачи
-    const taskCheckboxes = document.querySelectorAll('.task-checkbox');
-    taskCheckboxes.forEach(checkbox => {
+    // Checkbox click handling
+    const checkboxes = document.querySelectorAll('.task-checkbox');
+    
+    checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            const taskName = this.closest('.task-item').querySelector('.task-name');
+            const taskItem = this.closest('.task-item');
+            const taskName = taskItem.querySelector('.task-name');
+            
             if (this.checked) {
                 taskName.classList.add('task-completed');
             } else {
@@ -21,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Анимация кнопок
+    // Button animation
     const buttons = document.querySelectorAll('.btn');
     buttons.forEach(button => {
         button.addEventListener('mouseenter', function() {
@@ -32,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Подтверждение удаления
+    // Delete confirmation
     const deleteButtons = document.querySelectorAll('.delete-task');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(e) {
@@ -41,4 +44,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-}); 
+});
+
+// Function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+} 

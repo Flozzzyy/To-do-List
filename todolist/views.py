@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -36,7 +37,7 @@ class Register(CreateView):
     template_name = 'todolist/register.html'
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
-
+    
     def form_valid(self, form):
         messages.success(self.request, 'Account created successfully! Please login.')
         return super().form_valid(form)
@@ -55,14 +56,25 @@ class TaskList(ListView):
     context_object_name = 'tasks'
     
     def get_queryset(self):
+        search = self.request.GET.get('search', '')
+        print(f"Search query: {search}")  # For debugging
+        
         if self.request.user.is_authenticated:
-            return Task.objects.filter(user=self.request.user)
+            queryset = Task.objects.filter(user=self.request.user)
+            if search:
+                queryset = queryset.filter(name__icontains=search)
+            return queryset
         return Task.objects.none()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search', '')
+        return context
 
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
     template_name = 'todolist/task_form.html'
-    fields = ['name', 'status']
+    fields = ['name']
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
@@ -73,7 +85,7 @@ class TaskCreate(LoginRequiredMixin, CreateView):
 class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
     template_name = 'todolist/task_form.html'
-    fields = ['name', 'status']
+    fields = ['name']
     success_url = reverse_lazy('home')
 
     def get_queryset(self):

@@ -13,7 +13,9 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <h1>Todo List</h1>
+                    <a href="{% url 'home' %}">
+                        <i class="fas fa-tasks"></i> Todo List
+                    </a>
                 </div>
                 <div class="auth-links">
                     {% if user.is_authenticated %}
@@ -44,19 +46,51 @@
             {% endfor %}
         </div>
         {% endif %}
+        
+        {% if search %}
+            <h2>Search results for: {{ search }}</h2>
+        {% endif %}
 
         {% if user.is_authenticated %}
             <div class="task-list">
                 <div class="task-controls">
-                    <a href="{% url 'task_create' %}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> New Task
-                    </a>
+                    <div class="search-and-create">
+                        <form method="GET" action="{% url 'home' %}" class="search-form">
+                            <div class="search-container">
+                                <input type="text" 
+                                       name="search" 
+                                       placeholder="Search tasks..." 
+                                       value="{{ search }}"
+                                       class="search-input">
+                                       
+                                <button type="submit" class="search-btn">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </form>
+                        <a href="{% url 'task_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> New Task
+                        </a>
+                    </div>
                 </div>
+
+                {% if search %}
+                    <div class="search-results-header">
+                        <h3>Search results: "{{ search }}"</h3>
+                    </div>
+                {% endif %}
+
                 {% if tasks %}
                     {% for task in tasks %}
                         <div class="task-item">
                             <div class="task-content">
-                                <input type="checkbox" class="task-checkbox" {% if task.status %}checked{% endif %}>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" 
+                                           class="task-checkbox" 
+                                           {% if task.status %}checked{% endif %}
+                                           data-task-id="{{ task.id }}">
+                                    <span class="checkmark"></span>
+                                </label>
                                 <span class="task-name {% if task.status %}task-completed{% endif %}">
                                     {{ task.name }}
                                 </span>
@@ -73,7 +107,7 @@
                     {% endfor %}
                 {% else %}
                     <div class="task-item">
-                        <p>No tasks yet. Create your first task!</p>
+                        <p>{% if search %}No tasks found for your search{% else %}No tasks yet. Create your first task!{% endif %}</p>
                     </div>
                 {% endif %}
             </div>
